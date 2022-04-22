@@ -69,4 +69,6 @@ updatethought(req, res ) {
 //MAYBE DELETE IF I FEEL LIKE IT // 
 
 
-}
+};
+
+module.exports = thoughtController;

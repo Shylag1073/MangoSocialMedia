@@ -70,3 +70,5 @@ updateUser(req, res ) {
 
 
 }
+
+module.exports = userController;
