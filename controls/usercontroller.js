@@ -64,11 +64,47 @@ updateUser(req, res ) {
         res.status(500).json(err);
         console.log(err);
     });
-}
+},
+
+/// ADD A FRIEND //// 
+addFriend(req, res ) {
+    User.findOneAndUpdate({_id: req.params.userId },
+        {add$set: { friends: req.params.friendsId} },
+        {new: true})
+        .then ((dbUserData) => {
+            if (!dbUserData) {
+                return res.status(404).json({ message: ' Opps No user with this id! '});
+            }
+            res.json(dbUserData);
+        })
+        .catch ((err) => {
+            res.status(500).json(err);
+            console.log(err);
+        }); 
+},
+
+//// REMOVE FRIEND /// 
+
+removeFriend(req, res ) {
+    User.findOneAndUpdate({_id: req.params.userId },
+        {$pull: { friends: req.params.friendsId} },
+        {new: true})
+        .then ((dbUserData) => {
+            if (!dbUserData) {
+                return res.status(404).json({ message: ' Opps No user with this id! '});
+            }
+            res.json(dbUserData);
+        })
+        .catch ((err) => {
+            res.status(500).json(err);
+            console.log(err);
+        }); 
+},
+
 
 //MAYBE DELETE IF I FEEL LIKE IT // 
 
 
-}
+};
 
 module.exports = userController;
