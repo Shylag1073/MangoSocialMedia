@@ -64,7 +64,43 @@ updateThought(req, res ) {
         res.status(500).json(err);
         console.log(err);
     });
-}
+},
+/// ADD A REACTION //// 
+
+addReaction(req, res ) {
+    Thought.findOneAndUpdate({_id: req.params.thoughtId },
+        {add$set: { reactions: req.body } },
+        {runValidators: true, new: true})
+        .then ((dbThoughtData) => {
+            if (!dbThoughtData) {
+                return res.status(404).json({ message: ' Opps No thought with this id! '});
+            }
+            res.json(dbThoughtData);
+        })
+        .catch ((err) => {
+            res.status(500).json(err);
+            console.log(err);
+        }); 
+},
+
+//// REMOVE REACTION /// 
+
+removeReaction(req, res ) {
+    Thought.findOneAndUpdate({_id: req.params.thoughtId },
+        {$pull: { reactions : req.params.reactionId} },
+        {runValidators: true, new: true})
+        .then ((dbThoughtData) => {
+            if (!dbThoughtData) {
+                return res.status(404).json({ message: ' Opps No thought with this id! '});
+            }
+            res.json(dbThoughtData);
+        })
+        .catch ((err) => {
+            res.status(500).json(err);
+            console.log(err);
+        }); 
+},
+
 
 //MAYBE DELETE IF I FEEL LIKE IT // 
 
