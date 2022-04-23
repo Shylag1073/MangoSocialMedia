@@ -5,7 +5,8 @@ const userController ={
 
 // GET ALL USERS // 
 getAllUsers(req,res) {
-    User.find({})
+    User.find()
+    .select('-__v')
     .then(dbUserData => res.json(dbUserData))
     .catch (err => {
         res.status(500).json(err);
@@ -17,8 +18,9 @@ getAllUsers(req,res) {
 
 getSingleUser(req, res) {
     User.findOne ({ _id: req.params.userId  })
-    .select('-_v')
+    .select('-__v')
     .populate('thoughts')
+    .populate('friend')
     .then ((dbUserData) => {
         if (!dbUserData) {
             return res.status(404).json({ message: ' Opps No user with this id! '});

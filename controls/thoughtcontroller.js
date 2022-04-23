@@ -47,7 +47,7 @@ createThought(req,res) {
 
 // UPDATE thought // 
 
-updatethought(req, res ) {
+updateThought(req, res ) {
     Thought.findOneAndUpdate (
         { _id: req.params.thoughtId },
         {$set: req.body,},

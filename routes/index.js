@@ -9,4 +9,4 @@ router.use ((req, res) => {
     return res.send('Wrong Route!');
 });
 
-module.exports = routers;
+module.exports = router;
