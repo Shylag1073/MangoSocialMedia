@@ -17,8 +17,6 @@ getThoughts(req,res) {
 
 getSingleThought(req, res) {
     Thought.findOne ({ _id: req.params.thoughtId  })
-    .select('-_v')
-    .populate('thoughts')
     .then ((dbThoughtData) => {
         if (!dbThoughtData) {
             return res.status(404).json({ message: ' Opps No thoughts with this id! '});
@@ -34,16 +32,27 @@ getSingleThought(req, res) {
 
 // MAKE A NEW thought // 
 
-createThought(req,res) {
+createThought(req, res) {
     Thought.create(req.body)
-    .then((dbThoughtData) => {
-        res.json(dbThoughtData);
-    })
-    .catch ((err) => {
-        res.status(500).json(err);
+      .then((dbThoughtData) => {
+        return User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $push: { thoughts: dbThoughtData._id } },
+          { new: true }
+        );
+      })
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          return res.status(404).json({ message: 'Thought created but no user with this id!' });
+        }
+
+        res.json({ message: 'Thought successfully created!' });
+      })
+      .catch((err) => {
         console.log(err);
-    });
-},
+        res.status(500).json(err);
+      });
+  },
 
 // UPDATE thought // 
 
@@ -65,6 +74,35 @@ updateThought(req, res ) {
         console.log(err);
     });
 },
+
+
+// Delete a Thought 
+
+deleteThought (req, res) {
+    Thought.findOneAndRemove({ _id: req.params.thoughtId })
+    .then((dbThoughtData) => {
+        if(!dbThoughtData) {
+            return res.status(404).json({ message: ' Opps No thought with this id! '});
+        }
+        // remove thought id from user's thoughts
+        return User.findOneandUpdate (
+            {thoughts: req.parms.thoughtId},
+            {$pull: { thoughts: req.params.thoughtId } },
+            { new: true }
+        );
+    })
+    .then ((dbUserData) => {
+        if (!dbUserData) {
+            return res.status (404).json ({ message: 'Thought created but no user with this id! '})
+        }
+        res.json ({ message: 'Thought successfully deleted '});
+    })
+    .catch ((err) => {
+        res.status(500).json(err);
+        console.log(err);
+    });
+},
+
 /// ADD A REACTION //// 
 
 addReaction(req, res ) {

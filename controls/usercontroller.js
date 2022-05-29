@@ -20,7 +20,7 @@ getSingleUser(req, res) {
     User.findOne ({ _id: req.params.userId  })
     .select('-__v')
     .populate('thoughts')
-    .populate('friend')
+    .populate('friends')
     .then ((dbUserData) => {
         if (!dbUserData) {
             return res.status(404).json({ message: ' Opps No user with this id! '});
@@ -67,6 +67,25 @@ updateUser(req, res ) {
         console.log(err);
     });
 },
+// Delete User 
+
+deleteUser(req,res) {
+    User.findOneAndDelete({ _id: req.params.userId})
+    .then((dbUserData) => {
+        if (!dbUserData) {
+            return res.status(404).json ({ message: 'No User with this id! '});
+        }
+        return Thought.deleteMany ({ _id : {$in: dbUserData.thoughts } })
+    }) 
+    .then (() => {
+        res.json ({ message: 'User and associated thoughts deleted!'})
+    })
+    .catch ((err) => {
+        res.status(500).json(err);
+        console.log(err);
+    })
+},
+
 
 /// ADD A FRIEND //// 
 addFriend(req, res ) {

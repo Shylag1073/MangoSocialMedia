@@ -17,13 +17,13 @@ router.route('/').get(getThoughts).post(createThought);
 
 router.route('/:thoughtId').get(getSingleThought).put(updateThought);
 
-// API/thoughts/:thoughtsID/REACTION /// 
+//API/thoughts/:thoughtsID/REACTION /// 
 
-//router.route('/:thoughtId/reaction').post(addReaction);
+router.route('/:thoughtId/reaction').post(addReaction);
 
 // API/thoughts/:thoughtsID/REACTION/:REACTIONID /// 
 
-//router.route('/:thoughtsID/reaction/:reactionId').delete(removeReaction);
+router.route('/:thoughtsId/reaction/:reactionId').delete(removeReaction);
 
 
 module.exports = router;
